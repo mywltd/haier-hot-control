@@ -1,0 +1,48 @@
+# Local editors and agent state
+.vscode/
+.idea/
+.codex/
+.agents/
+.aws/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Flutter / Dart build output
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.pub-cache/
+**/.pub/
+**/build/
+**/ephemeral/
+**/artifacts/
+*.log
+
+# Python environments and caches
+**/__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Local credentials, account sessions and captures
+.env
+.env.*
+!.env.example
+*.local.json
+haier_session.json
+haier_energy.json*
+haier_captures/
+*.pem
+*.key
+*.pfx
+*.p12
+
+# Original handoff contains private device information; see docs/development.md
+/交接文档.md
+
+# Local backups and distribution bundles
+*.zip
+*.7z
+*.exe
+*.msi

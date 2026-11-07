@@ -1,0 +1,4 @@
+interface:
+  display_name: "Flutter Rust Bridge"
+  short_description: "基于官方文档和源码的 Flutter 与 Rust 接入、生成、构建及排错指南"
+  default_prompt: "使用 $flutter-rust-bridge 检查当前项目的版本和构建方式，完成 Flutter 与 Rust 的互操作开发并验证结果。"
