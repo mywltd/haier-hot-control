@@ -15,7 +15,7 @@ API 来源: xxxifan/haier_win11_widgets (参考 banto6/haier), 已实测签名�
   python haier_heat_ctl.py set-temp <设备> <温度>
   python haier_heat_ctl.py set <设备> 属性=值 [属性=值 ...]
 
-使用前设置 HAIER_APP_ID / HAIER_APP_KEY 环境变量。
+已内置固定签名配置，可用 HAIER_APP_ID / HAIER_APP_KEY 环境变量覆盖。
 会话保存在 haier_session.json (含 token, 自动续期)。
 设备控制走 WebSocket 网关 (pip install websocket-client)。
 """
@@ -37,7 +37,7 @@ from urllib.parse import urlparse
 # ------------------------------------------------------------------ 配置
 
 APP_ID = os.environ.get("HAIER_APP_ID", "MB-UZHSH-0001")
-APP_KEY = os.environ.get("HAIER_APP_KEY", "")
+APP_KEY = os.environ.get("HAIER_APP_KEY", "5dfca8714eb26e3a776e58a8273c8752")
 
 LOGIN_API = "https://zj.haier.net/api-gw/oauthserver/account/v1/login"
 REFRESH_API = "https://zj.haier.net/api-gw/oauthserver/account/v1/refreshToken"

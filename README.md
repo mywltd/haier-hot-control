@@ -48,28 +48,11 @@ flutter run -d windows
 
 ### 连接真实设备
 
-1. 在海尔智家中准备好已有绑定设备的账号。
-2. 复制配置示例，并填写自己可使用的接口签名参数：
+在海尔智家中准备好已有绑定设备的账号，运行应用后直接在「账号」页登录即可。
 
-   ```powershell
-   Copy-Item config/haier.example.json config/haier.local.json
-   notepad config/haier.local.json
-   ```
+固定的 `HAIER_APP_ID` 和 `HAIER_APP_KEY` 已内置在源码中，并保存在 [配置示例](haier_flutter/config/haier.example.json) 中；普通运行和构建都不需要 `--dart-define-from-file`。这些是应用接口的签名参数，账号密码仍需自行输入。
 
-   ```json
-   {
-     "HAIER_APP_ID": "MB-UZHSH-0001",
-     "HAIER_APP_KEY": "填写你的接口签名 appKey"
-   }
-   ```
-
-3. 携带配置启动，再在「账号」页登录：
-
-   ```powershell
-   flutter run -d windows --dart-define-from-file=config/haier.local.json
-   ```
-
-`HAIER_APP_KEY` 是接口签名参数，不是账号密码。仓库仅提供空值示例；`haier.local.json` 已被 Git 忽略。配置在编译时读取，修改后需要重新运行或构建。
+如果需要覆盖默认签名参数，可以复制示例为 `config/haier.local.json`、修改内容，再通过 `--dart-define-from-file=config/haier.local.json` 运行或构建。本地覆盖文件已被 Git 忽略，修改后需要重新编译。
 
 Flutter 客户端的密码仅用于当次登录，令牌保留在进程内存中。Python CLI 会另外保存本地会话文件。
 
@@ -83,23 +66,17 @@ flutter test --reporter expanded
 flutter build windows --release
 ```
 
-上述构建可运行演示模式。需要真实设备登录时使用本地配置构建：
-
-```powershell
-flutter build windows --release --dart-define-from-file=config/haier.local.json
-```
-
-输出程序位于 `build/windows/x64/runner/Release/haier_heat.exe`。分发时需要保留整个 `Release` 目录，包括 DLL 和 `data/`。编译参数会进入构建产物，因此带个人配置的产物仅供自行使用。
+默认构建包含固定签名参数，可在应用中登录真实账号。输出程序位于 `build/windows/x64/runner/Release/haier_heat.exe`，分发时需要保留整个 `Release` 目录，包括 DLL 和 `data/`。
 
 ### 安装包
 
-`windows/packaging/` 提供 Inno Setup 6 构建脚本。在 `haier_flutter/` 下可生成不带签名配置的演示安装包，Inno Setup 路径请按本机位置调整：
+`windows/packaging/` 提供 Inno Setup 6 构建脚本。在 `haier_flutter/` 下执行，Inno Setup 路径请按本机位置调整：
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File windows/packaging/build.ps1 -FlutterPath (Get-Command flutter).Source -InnoSetupPath 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' -Demo
+powershell -NoProfile -File windows/packaging/build.ps1 -FlutterPath (Get-Command flutter).Source -InnoSetupPath 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe'
 ```
 
-脚本输出到 `dist/`，程序和校验文件均不提交。自行使用真实设备时可去掉 `-Demo`，默认读取 `config/haier.local.json`，也可用 `-DartDefineFile` 指定本地配置。本次源码上传未验证安装、升级和卸载流程。
+脚本默认使用源码内置的签名配置，输出到 `dist/`，程序和校验文件均不提交。可用 `-DartDefineFile` 指定可选覆盖文件，或用 `-Demo` 显式清空签名密钥以生成只供演示的版本。安装、升级和卸载流程仍需在隔离环境中验证。
 
 ### 界面截图
 

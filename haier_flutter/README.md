@@ -25,14 +25,13 @@ flutter test --reporter expanded
 flutter build windows --release
 ```
 
-默认运行或构建可浏览演示数据。连接真实设备前，复制 `config/haier.example.json` 为 `config/haier.local.json`，填写签名配置后执行：
+固定接口签名参数已内置，直接运行即可在「账号」页登录真实账号：
 
 ```powershell
-flutter run -d windows --dart-define-from-file=config/haier.local.json
-flutter build windows --release --dart-define-from-file=config/haier.local.json
+flutter run -d windows
 ```
 
-本地签名文件不提交；账号密码在界面输入，令牌仅保留在当前进程内存中。
+`config/haier.example.json` 包含相同的固定参数。如需覆盖默认值，可复制为 `config/haier.local.json` 并传入 `--dart-define-from-file=config/haier.local.json`。本地覆盖文件不提交；账号密码在界面输入，令牌仅保留在当前进程内存中。
 
 构建产物为 `build/windows/x64/runner/Release/haier_heat.exe`，运行时需保留整个 Release 目录。
 
@@ -56,7 +55,7 @@ flutter test --reporter expanded
 powershell -NoProfile -File windows/packaging/build.ps1
 ```
 
-脚本默认使用 `config/haier.local.json` 注入接口签名配置；也可传入 `-DartDefineFile <路径>`，仅浏览演示数据时使用 `-Demo`。
+脚本默认使用源码内置的固定签名配置，无需本地配置文件；可传入 `-DartDefineFile <路径>` 覆盖，或使用 `-Demo` 显式清空签名密钥、禁用真实账号登录。
 构建工具路径可用 `-FlutterPath` 和 `-InnoSetupPath` 覆盖。版本和构建号读取 `pubspec.yaml`，每次发版递增构建号。
 产物为 `dist/HaierHeat-Setup-<版本>.exe`，旁边提供 `.sha256` 校验文件。完整 Release 文件和 Visual C++ 运行库随包分发，不包含 PDB 或本地配置 JSON 文件。
 

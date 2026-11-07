@@ -8,8 +8,6 @@
 
 ```powershell
 python -m pip install websocket-client
-$env:HAIER_APP_ID = 'MB-UZHSH-0001'
-$env:HAIER_APP_KEY = '填写你的接口签名 appKey'
 python haier_heat_ctl.py --help
 python haier_heat_ctl.py login --phone 你的手机号 --password 你的密码
 python haier_heat_ctl.py devices
@@ -17,7 +15,7 @@ python haier_heat_ctl.py status '设备名称或ID'
 python haier_heat_ctl.py attrs '设备名称或ID'
 ```
 
-已配置 Flutter 本地签名文件时，也可读取同一份配置：
+CLI 已内置与 Flutter 相同的固定签名参数，无需先设置环境变量。如需覆盖，可设置 `HAIER_APP_ID` / `HAIER_APP_KEY`，或读取 Flutter 的本地覆盖文件：
 
 ```powershell
 $haierConfig = Get-Content ../haier_flutter/config/haier.local.json -Raw | ConvertFrom-Json

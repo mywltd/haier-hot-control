@@ -10,7 +10,11 @@ class HaierApi {
     'HAIER_APP_ID',
     defaultValue: 'MB-UZHSH-0001',
   );
-  static const appKey = String.fromEnvironment('HAIER_APP_KEY');
+  // Shared application signing key; compile-time defines can override it.
+  static const appKey = String.fromEnvironment(
+    'HAIER_APP_KEY',
+    defaultValue: '5dfca8714eb26e3a776e58a8273c8752',
+  );
 
   static const _loginUrl =
       'https://zj.haier.net/api-gw/oauthserver/account/v1/login';
@@ -57,8 +61,8 @@ class HaierApi {
   Map<String, String> _headers(String url, String body) {
     if (appId.trim().isEmpty || appKey.trim().isEmpty) {
       throw HaierException(
-        '请先配置 HAIER_APP_ID / HAIER_APP_KEY，并通过 '
-        '--dart-define-from-file=config/haier.local.json 重新运行应用。',
+        '接口签名配置为空，请移除 HAIER_APP_ID / HAIER_APP_KEY 的空值覆盖，'
+        '或提供有效配置后重新运行应用。',
       );
     }
     final ts = DateTime.now().millisecondsSinceEpoch.toString();

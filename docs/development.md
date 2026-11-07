@@ -26,7 +26,9 @@ sign = SHA256(path + 去除空白的 JSON body + appId + appKey + 毫秒时间�
 
 签名输出小写十六进制。当前 Dart 实现对 `Uri.path` 签名，请求头包括 `accessToken`、`appId`、`appKey`、`clientId`、`sequenceId`、`sign`、`timestamp`、`timezone` 和 `language`。
 
-签名参数由 `HAIER_APP_ID` / `HAIER_APP_KEY` 提供，Dart 使用编译参数，Python 使用环境变量。仓库不保存真实签名密钥。
+固定的 `HAIER_APP_ID` / `HAIER_APP_KEY` 已写入 Dart、Python 源码和 `config/haier.example.json`，无需额外配置即可登录。Dart 仍支持编译参数覆盖，Python 仍支持环境变量覆盖。本地覆盖文件、账号密码和会话不提交。
+
+固定值与公开参考实现中的 App 来源配置一致：[banto6/haier 的 APP_SOURCES](https://github.com/banto6/haier/blob/b8b98c6e6238ab8b86226d23bf1fd8940a747732/custom_components/haier/core/client.py#L25-L30)、[haier_win11_widgets 的 Sources](https://github.com/xxxifan/haier_win11_widgets/blob/86bb533b89161ee69e4c1e4244b50c66a295e776/HaierWidget/Haier/HaierApi.cs#L61-L65)。上述公开源码中的值已逐字核对；个人账号与访问令牌仍在运行时提供。
 
 | 用途 | 请求 |
 | --- | --- |
@@ -82,7 +84,7 @@ python tool/prepare_window_probe.py "$env:TEMP/haier-shell-probe" ../skills/flut
 
 ### 2026-11-07 仓库发布前验证
 
-验证环境为 Flutter 3.47.9 / Dart 3.13.7。
+以下为首次导入仓库时的验证记录，环境为 Flutter 3.47.9 / Dart 3.13.7。之后已按项目约定恢复内置固定签名参数，普通运行和构建不再依赖本地配置文件。
 
 | 检查 | 结果 |
 | --- | --- |
@@ -98,6 +100,13 @@ python tool/prepare_window_probe.py "$env:TEMP/haier-shell-probe" ../skills/flut
 本次没有发起真实设备登录或控制，也没有重新运行原生窗口探针。README 中两张预览图已人工检查。
 
 提交前合入了工作区新增的安装脚本与 `0.2.0+3` 版本标记，PowerShell 语法检查通过；该安装包的安装、升级和卸载流程不在本轮验证范围内。
+
+### 固定签名参数恢复后的验证
+
+- `flutter analyze` 通过；默认配置下 10 项测试通过，显式空配置测试按条件跳过。
+- 使用 `--dart-define=HAIER_APP_KEY=` 单独运行 API 测试，验证演示构建在联网前拒绝登录。
+- Dart 与 Python 的固定签名均通过同一参考向量验证；Python 的默认参数、环境变量覆盖和模拟请求检查通过。
+- 无需本地配置的 Windows Release 构建成功。原输出目录的运行库被其他进程占用，因此将编译结果复制到独立目录完成 Inno Setup 编译，安装包版本为 `0.2.0.3`；未执行安装。
 
 ## 后续工作
 

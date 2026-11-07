@@ -2,7 +2,7 @@
 param(
     [string]$FlutterPath = 'E:\FlutterSDK\flutter\bin\flutter.bat',
     [string]$InnoSetupPath = 'D:\Program Files (x86)\Inno Setup 6\ISCC.exe',
-    [string]$DartDefineFile = 'config\haier.local.json',
+    [string]$DartDefineFile = '',
     [switch]$Demo
 )
 
@@ -27,13 +27,14 @@ $expectedFileVersion = "$version.$buildNumber"
 
 $buildArgs = @('build', 'windows', '--release')
 if ($Demo) {
-    Write-Host '构建演示版：未注入海尔接口签名配置。'
-} else {
+    $buildArgs += '--dart-define=HAIER_APP_KEY='
+    Write-Host '构建演示版：禁用海尔接口签名配置。'
+} elseif (-not [string]::IsNullOrWhiteSpace($DartDefineFile)) {
     if (-not [System.IO.Path]::IsPathRooted($DartDefineFile)) {
         $DartDefineFile = Join-Path $projectRoot $DartDefineFile
     }
     if (-not (Test-Path -LiteralPath $DartDefineFile -PathType Leaf)) {
-        throw '找不到本地签名配置。请用 -DartDefineFile 指定配置文件，或用 -Demo 构建演示版。'
+        throw '找不到指定的签名配置。请检查 -DartDefineFile，或省略它以使用内置配置。'
     }
     $config = Get-Content -LiteralPath $DartDefineFile -Raw -Encoding UTF8 | ConvertFrom-Json
     foreach ($key in @('HAIER_APP_ID', 'HAIER_APP_KEY')) {
@@ -44,6 +45,8 @@ if ($Demo) {
     }
     $buildArgs += "--dart-define-from-file=$DartDefineFile"
     Write-Host "使用本地签名配置：$DartDefineFile"
+} else {
+    Write-Host '使用源码内置的固定接口签名配置。'
 }
 
 Push-Location $projectRoot
